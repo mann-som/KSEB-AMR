@@ -1,0 +1,13 @@
+
+kseb-prod:
+  type : mysql
+  host : 172.17.1.100
+  port : 3306
+  user : di_user
+  password : Mn2!Qz8$Lp#5
+  database : KSEB_HES_DR
+
+kseb-local:
+  type : sqlite
+  path : DataBase/sqlite_data/kseb-local.db
+  timeout : 10
