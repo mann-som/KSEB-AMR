@@ -23,7 +23,7 @@ if __name__ == "__main__":
         message=f"Pipeline start - group {args.group}",
         to_file=True
     )
-    meters_raw = DataGetter.get_meters()
+    meters_raw = DataGetter.get_meters(args.group)
     meters = []
     for m in meters_raw:
         meter = Meter(m)
