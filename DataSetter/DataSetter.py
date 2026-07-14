@@ -79,7 +79,8 @@ def update_meter_status(meter_id):
                         AND b.`00_00_00_01_02_FF` <= %s
                     ),
 
-                    UPDATED_TIMESTAMP = CURRENT_TIMESTAMP
+                    UPDATED_TIMESTAMP = CURRENT_TIMESTAMP,
+                    LAST_EXC_TIMESTAMP = CURRENT_TIMESTAMP
 
                 WHERE mrs.METER_ID = %s
             """
