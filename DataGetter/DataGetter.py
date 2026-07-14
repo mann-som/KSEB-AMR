@@ -60,7 +60,7 @@ def get_timeout(meter_id):
 
     try:
         with db.cursor() as cursor:
-            cursor.execute(f"SELECT MAX(TIMEOUT) FROM timeouts WHERE METER_ID = '{meter_id}'")
+            cursor.execute(f"SELECT MAX(TIMEOUT) FROM timeout WHERE METER_ID = '{meter_id}'")
             result = cursor.fetchone()
             
             if result and result[0]:
@@ -88,7 +88,7 @@ def get_scalar(meter_sn: str, profile: "Profile") -> Optional[Dict[str, Any]]:
         with db.cursor() as cursor:
             
             cursor.execute(
-                f"SELECT * FROM `{table}` WHERE METER_SERIAL_NUMBER = %s LIMIT 1",
+                f"SELECT * FROM `{table}` WHERE METER_SERIAL_NO = %s LIMIT 1",
                 (meter_sn,),
             )
             row = cursor.fetchone()
