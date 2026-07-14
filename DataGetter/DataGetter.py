@@ -60,18 +60,26 @@ def get_timeout(meter_id):
 
     try:
         with db.cursor() as cursor:
-            cursor.execute(f"SELECT MAX(TIMEOUT) FROM timeout WHERE METER_ID = '{meter_id}'")
-            result = cursor.fetchone()
-            
-            if result and result[0]:
-                timeout_value = result[0]
-                logger.info(f"Timeout retrieved for meter {meter_id}: {timeout_value}")
-                return timeout_value
-            else:
-                logger.info(f"No timeout found for meter {meter_id}, setting default timeout")
-                DataSetter.set_timeout(meter_id, timeout=10)
-                return 10
-            
+            last_error = None
+            for table_name in ("timeout", "timeouts"):
+                try:
+                    cursor.execute(
+                        f"SELECT MAX(timeout) FROM {table_name} WHERE METER_ID = ?",
+                        (meter_id,),
+                    )
+                    result = cursor.fetchone()
+                    if result and result[0] is not None:
+                        timeout_value = result[0]
+                        logger.info(f"Timeout retrieved for meter {meter_id}: {timeout_value}")
+                        return timeout_value
+                except Exception as exc:
+                    last_error = exc
+                    continue
+
+            logger.info(f"No timeout found for meter {meter_id}, setting default timeout")
+            DataSetter.set_timeout(meter_id, timeout=10)
+            return 10
+
     except Exception as e:
         logger.error(f"Error fetching timeout for meter {meter_id}: {str(e)}")
         return 10

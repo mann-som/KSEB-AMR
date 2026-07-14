@@ -11,23 +11,31 @@ def set_timeout(meter_id, timeout=10):
 
     try:
         with db.cursor() as cursor:
-            cursor.execute(f"""INSERT INTO timeouts (METER_ID, TIMEOUT)
-                            VALUES ('{meter_id}', {timeout})""")
-            rows = cursor.rowcount
-            # db.commit()
-            logger.info(
-                message=f"Timeout set successfully for meter {meter_id} with value {timeout}. Rows affected: {rows}",
-                meter_id=meter_id,
-                to_file=True
-            )
-            return True
-            
+            last_error = None
+            for table_name in ("timeout", "timeouts"):
+                try:
+                    cursor.execute(
+                        f"INSERT INTO {table_name} (METER_ID, timeout) VALUES (?, ?)",
+                        (meter_id, timeout),
+                    )
+                    rows = cursor.rowcount
+                    logger.info(
+                        message=f"Timeout set successfully for meter {meter_id} with value {timeout}. Rows affected: {rows}",
+                        meter_id=meter_id,
+                        to_file=True,
+                    )
+                    return True
+                except Exception as exc:
+                    last_error = exc
+                    continue
+
+            raise last_error or RuntimeError("Unable to write timeout")
+
     except Exception as e:
-        db.rollback()
         logger.error(
             message=f"Error setting timeout for meter {meter_id}: {str(e)}",
             meter_id=meter_id,
-            to_file=True
+            to_file=True,
         )
         return False
     

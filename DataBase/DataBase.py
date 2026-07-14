@@ -72,7 +72,7 @@ class _SQLiteAdapter(_Adapter):
             timeout=cfg.get("timeout", 10),
             check_same_thread=False
         )
-        conn.row_factory = sqlite3
+        conn.row_factory = sqlite3.Row
         return conn
     
     def placeholder_style(self):

@@ -46,6 +46,13 @@ SCHEMA = {
             timeout   TEXT    NOT NULL
         )
         """,
+        """
+        CREATE TABLE IF NOT EXISTS timeouts (
+            id        INTEGER PRIMARY KEY AUTOINCREMENT,
+            METER_ID  TEXT    NOT NULL,
+            timeout   TEXT    NOT NULL
+        )
+        """,
         # Add more tables here as the project grows, for example:
         # """
         # CREATE TABLE IF NOT EXISTS meter_reads (
